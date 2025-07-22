@@ -7,6 +7,7 @@ import 'package:todo_proto/todo_proto.dart' as pt;
 import '../../../../application/usecases/get_all_todos.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../infrastructure/dtos/todo_dto.dart';
+import '../../../utils/request_response_utils.dart';
 
 @singleton
 class GetAllTodosController {
@@ -17,23 +18,22 @@ class GetAllTodosController {
   Future<Response> handle(Request request) async {
     try {
       final result = await _getAllTodos();
-      final todos = result.map((todo) => TodoDto.fromEntity(todo).toTodoProto()).toList();
-      final response = pt.ListTodosResponse(todos: todos);
+      final todoDtos = result.map((todo) => TodoDto.fromEntity(todo)).toList();
 
-      return _successResponse(response.writeToBuffer());
+      return RequestResponseUtils.successResponse(
+        request,
+        todoDtos,
+        toProtobuf: () {
+          final todos = todoDtos.map((dto) => dto.toTodoProto()).toList();
+          final response = pt.ListTodosResponse(todos: todos);
+          return response.writeToBuffer();
+        },
+        toJson: () => {'todos': todoDtos.map((dto) => dto.toJson()).toList()},
+      );
     } on Failure catch (e) {
-      return _errorResponse(e.message, HttpStatus.internalServerError);
+      return RequestResponseUtils.errorResponse(request, e.message, HttpStatus.internalServerError);
     } catch (e) {
-      return _errorResponse('Internal server error', HttpStatus.internalServerError);
+      return RequestResponseUtils.errorResponse(request, 'Internal server error', HttpStatus.internalServerError);
     }
-  }
-
-  Response _successResponse(List<int> body, [int statusCode = HttpStatus.ok]) {
-    return Response(statusCode, headers: {'Content-Type': 'application/protobuf'}, body: body);
-  }
-
-  Response _errorResponse(String message, int statusCode) {
-    final errorResponse = pt.ErrorResponse(message: message, code: statusCode);
-    return Response(statusCode, headers: {'Content-Type': 'application/protobuf'}, body: errorResponse.writeToBuffer());
   }
 }

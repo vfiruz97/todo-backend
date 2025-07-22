@@ -37,12 +37,18 @@ Middleware contentTypeMiddleware() {
     return (Request request) async {
       if (request.method == 'POST' || request.method == 'PUT') {
         final contentType = request.headers['content-type'];
-        if (contentType == null || !contentType.contains('application/json')) {
+        if (contentType == null ||
+            (!contentType.contains('application/json') &&
+                !contentType.contains('application/x-protobuf') &&
+                !contentType.contains('application/protobuf'))) {
           return Response(
             HttpStatus.unsupportedMediaType,
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
-              'error': {'message': 'Content-Type must be application/json', 'code': HttpStatus.unsupportedMediaType},
+              'error': {
+                'message': 'Content-Type must be application/json or application/x-protobuf',
+                'code': HttpStatus.unsupportedMediaType,
+              },
             }),
           );
         }

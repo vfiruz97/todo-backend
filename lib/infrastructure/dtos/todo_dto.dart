@@ -80,7 +80,7 @@ class TodoDto with _$TodoDto {
 
   TodoItemsCompanion toTodoItems() {
     return TodoItemsCompanion(
-      id: Value(id!),
+      id: Value(id ?? 0),
       title: Value(title),
       description: Value(description),
       isCompleted: Value(isCompleted),
