@@ -1,6 +1,5 @@
 import 'package:dotenv/dotenv.dart';
 
-
 class DatabaseConfig {
   final String host;
   final int port;

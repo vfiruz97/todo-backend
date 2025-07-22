@@ -18,7 +18,11 @@ QueryExecutor _openConnection(DatabaseConfig dbConfig) {
       username: dbConfig.username,
       password: dbConfig.password,
     ),
-    settings: pg.ConnectionSettings(applicationName: 'TodoApp', connectTimeout: dbConfig.connectionTimeout),
+    settings: pg.ConnectionSettings(
+      applicationName: 'TodoApp',
+      connectTimeout: dbConfig.connectionTimeout,
+      sslMode: pg.SslMode.disable,
+    ),
     logStatements: true,
     enableMigrations: true,
   );
