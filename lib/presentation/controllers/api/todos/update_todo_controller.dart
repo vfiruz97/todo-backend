@@ -28,7 +28,7 @@ class UpdateTodoController {
         return RequestResponseUtils.errorResponse(request, 'Invalid todo ID format', HttpStatus.badRequest);
       }
 
-      final updateTodoData = await RequestResponseUtils.parseRequest<UpdateTodoParams>(
+      final updateTodoParams = await RequestResponseUtils.parseRequest<UpdateTodoParams>(
         request,
         fromProtobuf: (bytes) {
           final proto = pt.UpdateTodoRequest.fromBuffer(bytes);
@@ -39,21 +39,17 @@ class UpdateTodoController {
             isCompleted: proto.hasIsCompleted() ? proto.isCompleted : null,
           );
         },
-        fromJson: (json) => UpdateTodoParams.fromJson(json),
+        fromJson: (json) {
+          json['id'] = id;
+          return UpdateTodoParams.fromJson(json);
+        },
       );
 
-      if (updateTodoData.title != null && updateTodoData.title!.isEmpty) {
+      if (updateTodoParams.title != null && updateTodoParams.title!.isEmpty) {
         return RequestResponseUtils.errorResponse(request, 'Title cannot be empty', HttpStatus.badRequest);
       }
 
-      final params = UpdateTodoParams(
-        id: id,
-        title: updateTodoData.title,
-        description: updateTodoData.description,
-        isCompleted: updateTodoData.isCompleted,
-      );
-
-      final result = await _updateTodo(params);
+      final result = await _updateTodo(updateTodoParams);
       final todoDto = TodoDto.fromEntity(result);
 
       return RequestResponseUtils.successResponse(
