@@ -15,6 +15,8 @@ class GetAllTodosController {
   const GetAllTodosController({required GetAllTodos getAllTodos}) : _getAllTodos = getAllTodos;
 
   Future<Response> handle(Request request) async {
+    print('object');
+    print('GetAllTodosController.handle called');
     try {
       final result = await _getAllTodos();
       final todos = result.map((todo) => TodoDto.fromEntity(todo).toTodoProto()).toList();

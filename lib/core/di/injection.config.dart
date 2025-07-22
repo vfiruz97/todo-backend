@@ -23,7 +23,16 @@ import '../../infrastructure/config/database_config.dart' as _i520;
 import '../../infrastructure/database/app_database.dart' as _i89;
 import '../../infrastructure/database/daos/todo_dao.dart' as _i298;
 import '../../infrastructure/repositories/todo_repository.dart' as _i455;
-import '../../presentation/controllers/todo_controller.dart' as _i489;
+import '../../presentation/controllers/api/todos/create_todo_controller.dart'
+    as _i355;
+import '../../presentation/controllers/api/todos/delete_todo_controller.dart'
+    as _i861;
+import '../../presentation/controllers/api/todos/get_all_todos_controller.dart'
+    as _i474;
+import '../../presentation/controllers/api/todos/get_todo_controller.dart'
+    as _i515;
+import '../../presentation/controllers/api/todos/update_todo_controller.dart'
+    as _i802;
 import '../../presentation/routes/api.dart' as _i1043;
 import 'injection.dart' as _i464;
 
@@ -57,16 +66,30 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i77.DeleteTodo>(
       () => _i77.DeleteTodo(gh<_i667.ITodoRepository>()),
     );
-    gh.singleton<_i489.TodoController>(
-      () => _i489.TodoController(
-        createTodo: gh<_i426.CreateTodo>(),
-        getTodo: gh<_i827.GetTodo>(),
-        getAllTodos: gh<_i1052.GetAllTodos>(),
-        updateTodo: gh<_i216.UpdateTodo>(),
-        deleteTodo: gh<_i77.DeleteTodo>(),
+    gh.singleton<_i861.DeleteTodoController>(
+      () => _i861.DeleteTodoController(deleteTodo: gh<_i77.DeleteTodo>()),
+    );
+    gh.singleton<_i355.CreateTodoController>(
+      () => _i355.CreateTodoController(createTodo: gh<_i426.CreateTodo>()),
+    );
+    gh.singleton<_i474.GetAllTodosController>(
+      () => _i474.GetAllTodosController(getAllTodos: gh<_i1052.GetAllTodos>()),
+    );
+    gh.singleton<_i802.UpdateTodoController>(
+      () => _i802.UpdateTodoController(updateTodo: gh<_i216.UpdateTodo>()),
+    );
+    gh.singleton<_i515.GetTodoController>(
+      () => _i515.GetTodoController(getTodo: gh<_i827.GetTodo>()),
+    );
+    gh.singleton<_i1043.Api>(
+      () => _i1043.Api(
+        createTodoController: gh<_i355.CreateTodoController>(),
+        getTodoController: gh<_i515.GetTodoController>(),
+        getAllTodosController: gh<_i474.GetAllTodosController>(),
+        updateTodoController: gh<_i802.UpdateTodoController>(),
+        deleteTodoController: gh<_i861.DeleteTodoController>(),
       ),
     );
-    gh.singleton<_i1043.Api>(() => _i1043.Api(gh<_i489.TodoController>()));
     return this;
   }
 }
