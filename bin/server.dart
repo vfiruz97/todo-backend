@@ -26,7 +26,6 @@ void main(List<String> args) async {
       .addMiddleware(requestLoggingMiddleware())
       .addMiddleware(errorHandlingMiddleware())
       .addMiddleware(corsMiddleware())
-      .addMiddleware(contentTypeMiddleware())
       .addHandler(router.call);
 
   final ip = InternetAddress.anyIPv4;

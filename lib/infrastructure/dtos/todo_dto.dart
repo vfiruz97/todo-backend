@@ -1,14 +1,16 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:fixnum/fixnum.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:todo_proto/todo_proto.dart' as pt;
 
 import '../../domain/entities/todo.dart';
+import '../database/app_database.dart';
 
 part 'todo_dto.freezed.dart';
 part 'todo_dto.g.dart';
 
 @freezed
-abstract class TodoDto with _$TodoDto {
+class TodoDto with _$TodoDto {
   const TodoDto._();
 
   const factory TodoDto({
@@ -54,13 +56,36 @@ abstract class TodoDto with _$TodoDto {
   }
 
   pt.Todo toTodoProto() {
-    return pt.Todo(
-      id: id,
+    final todo = pt.Todo(
       title: title,
       description: description,
       isCompleted: isCompleted,
       createdAt: Int64(createdAt.millisecondsSinceEpoch),
       updatedAt: Int64(updatedAt.millisecondsSinceEpoch),
+    );
+    if (id != null) todo.id = id!;
+    return todo;
+  }
+
+  factory TodoDto.fromTodoItems(TodoItemsCompanion todo) {
+    return TodoDto(
+      id: todo.id.value,
+      title: todo.title.value,
+      description: todo.description.value ?? '',
+      isCompleted: todo.isCompleted.value,
+      createdAt: todo.createdAt.value,
+      updatedAt: todo.updatedAt.value,
+    );
+  }
+
+  TodoItemsCompanion toTodoItems() {
+    return TodoItemsCompanion(
+      id: Value(id!),
+      title: Value(title),
+      description: Value(description),
+      isCompleted: Value(isCompleted),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
     );
   }
 

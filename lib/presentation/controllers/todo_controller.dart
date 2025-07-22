@@ -1,15 +1,16 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:todo_proto/todo_proto.dart' as pt;
 
 import '../../application/usecases/create_todo.dart';
 import '../../application/usecases/delete_todo.dart';
 import '../../application/usecases/get_all_todos.dart';
 import '../../application/usecases/get_todo.dart';
 import '../../application/usecases/update_todo.dart';
+import '../../core/error/failures.dart';
 import '../../infrastructure/dtos/todo_dto.dart';
 
 @singleton
@@ -34,22 +35,21 @@ class TodoController {
 
   Future<Response> create(Request request) async {
     try {
-      final body = await request.readAsString();
-      final data = jsonDecode(body) as Map<String, dynamic>;
+      final bodyBytes = await request.read().first;
+      final createTodoRequest = pt.CreateTodoRequest.fromBuffer(bodyBytes);
 
-      final title = data['title'] as String?;
-      final description = data['description'] as String?;
-
-      if (title == null || description == null) {
-        return _errorResponse('Title and description are required', HttpStatus.badRequest);
+      if (createTodoRequest.title.isEmpty) {
+        return _errorResponse('Title cannot be empty', HttpStatus.badRequest);
       }
 
-      final params = CreateTodoParams(title: title, description: description);
+      final params = CreateTodoParams(title: createTodoRequest.title, description: createTodoRequest.description);
       final result = await _createTodo(params);
 
-      return _successResponse(TodoDto.fromEntity(result).toJson(), HttpStatus.created);
+      return _successResponse(TodoDto.fromEntity(result).toTodoProto().writeToBuffer());
+    } on Failure catch (e) {
+      return _errorResponse(e.message, HttpStatus.internalServerError);
     } catch (e) {
-      return _errorResponse('Invalid JSON format', HttpStatus.badRequest);
+      return _errorResponse('Invalid Protobuf format', HttpStatus.badRequest);
     }
   }
 
@@ -72,7 +72,9 @@ class TodoController {
         return _errorResponse('Todo not found', HttpStatus.notFound);
       }
 
-      return _successResponse(TodoDto.fromEntity(result).toJson());
+      return _successResponse(TodoDto.fromEntity(result).toTodoProto().writeToBuffer());
+    } on Failure catch (e) {
+      return _errorResponse(e.message, HttpStatus.internalServerError);
     } catch (e) {
       return _errorResponse('Internal server error', HttpStatus.internalServerError);
     }
@@ -81,8 +83,12 @@ class TodoController {
   Future<Response> getAll(Request request) async {
     try {
       final result = await _getAllTodos();
+      final todos = result.map((todo) => TodoDto.fromEntity(todo).toTodoProto()).toList();
+      final response = pt.ListTodosResponse(todos: todos);
 
-      return _successResponse({'todos': result.map((todo) => TodoDto.fromEntity(todo).toJson()).toList()});
+      return _successResponse(response.writeToBuffer());
+    } on Failure catch (e) {
+      return _errorResponse(e.message, HttpStatus.internalServerError);
     } catch (e) {
       return _errorResponse('Internal server error', HttpStatus.internalServerError);
     }
@@ -100,21 +106,27 @@ class TodoController {
         return _errorResponse('Invalid todo ID format', HttpStatus.badRequest);
       }
 
-      final body = await request.readAsString();
-      final data = jsonDecode(body) as Map<String, dynamic>;
+      final bodyBytes = await request.read().first;
+      final updateTodoRequest = pt.UpdateTodoRequest.fromBuffer(bodyBytes);
+
+      if (updateTodoRequest.title.isEmpty) {
+        return _errorResponse('Title cannot be empty', HttpStatus.badRequest);
+      }
 
       final params = UpdateTodoParams(
         id: id,
-        title: data['title'] as String?,
-        description: data['description'] as String?,
-        isCompleted: data['isCompleted'] as bool?,
+        title: updateTodoRequest.hasTitle() ? updateTodoRequest.title : null,
+        description: updateTodoRequest.hasDescription() ? updateTodoRequest.description : null,
+        isCompleted: updateTodoRequest.hasIsCompleted() ? updateTodoRequest.isCompleted : null,
       );
 
       final result = await _updateTodo(params);
 
-      return _successResponse(TodoDto.fromEntity(result).toJson());
+      return _successResponse(TodoDto.fromEntity(result).toTodoProto().writeToBuffer());
+    } on Failure catch (e) {
+      return _errorResponse(e.message, HttpStatus.internalServerError);
     } catch (e) {
-      return _errorResponse('Invalid JSON format or internal server error', HttpStatus.badRequest);
+      return _errorResponse('Invalid Protobuf format or internal server error', HttpStatus.badRequest);
     }
   }
 
@@ -134,22 +146,19 @@ class TodoController {
       await _deleteTodo(params);
 
       return Response(HttpStatus.noContent);
+    } on Failure catch (e) {
+      return _errorResponse(e.message, HttpStatus.internalServerError);
     } catch (e) {
       return _errorResponse('Internal server error', HttpStatus.internalServerError);
     }
   }
 
-  Response _successResponse(Map<String, dynamic> data, [int statusCode = HttpStatus.ok]) {
-    return Response(statusCode, headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
+  Response _successResponse(List<int> body, [int statusCode = HttpStatus.ok]) {
+    return Response(statusCode, headers: {'Content-Type': 'application/protobuf'}, body: body);
   }
 
   Response _errorResponse(String message, int statusCode) {
-    return Response(
-      statusCode,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'error': {'message': message, 'code': statusCode},
-      }),
-    );
+    final errorResponse = pt.ErrorResponse(message: message, code: statusCode);
+    return Response(statusCode, headers: {'Content-Type': 'application/protobuf'}, body: errorResponse.writeToBuffer());
   }
 }
