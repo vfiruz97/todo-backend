@@ -32,6 +32,6 @@ void main(List<String> args) async {
   final port = int.parse(env['PORT'] ?? '8080');
   final server = await serve(handler, ip, port);
 
-  print('🚀 Todo Backend Server started!');
-  print('📍 Server listening on ${server.address.address}:${server.port}');
+  print('Todo Backend Server started!');
+  print('Server listening on ${server.address.address}:${server.port}');
 }
