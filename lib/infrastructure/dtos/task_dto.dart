@@ -1,4 +1,6 @@
+import 'package:fixnum/fixnum.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:todo_proto/todo_proto.dart' as pt;
 
 import '../../domain/entities/task.dart';
 
@@ -37,6 +39,28 @@ abstract class TaskDto with _$TaskDto {
       isCompleted: isCompleted,
       createdAt: createdAt,
       updatedAt: updatedAt,
+    );
+  }
+
+  factory TaskDto.fromTaskProto(pt.Task task) {
+    return TaskDto(
+      id: task.hasId() ? task.id : null,
+      title: task.title,
+      description: task.description,
+      isCompleted: task.isCompleted,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(task.createdAt.toInt()),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(task.updatedAt.toInt()),
+    );
+  }
+
+  pt.Task toTaskProto() {
+    return pt.Task(
+      id: id,
+      title: title,
+      description: description,
+      isCompleted: isCompleted,
+      createdAt: Int64(createdAt.millisecondsSinceEpoch),
+      updatedAt: Int64(updatedAt.millisecondsSinceEpoch),
     );
   }
 
