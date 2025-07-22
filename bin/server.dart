@@ -1,22 +1,25 @@
 import 'dart:io';
 
+import 'package:dotenv/dotenv.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
+import 'package:shelf_router/shelf_router.dart';
 import 'package:todo_backend/core/di/injection.dart';
-import 'package:todo_backend/presentation/controllers/todo_controller.dart';
 import 'package:todo_backend/presentation/middleware/middleware.dart';
-import 'package:todo_backend/presentation/routes/app_routes.dart';
+import 'package:todo_backend/presentation/routes/api.dart';
 
 void main(List<String> args) async {
   await configureDependencies();
 
-  final TodoController todoController = getIt<TodoController>();
+  final DotEnv env = getIt<DotEnv>();
+  final Api api = getIt<Api>();
 
   // Create router
-  final router = createAppRouter(todoController);
+  final router = Router();
+  router.mount('/api/v1/', api.routerV1.call);
 
-  // Use any available host or container IP (usually `0.0.0.0`).
-  final ip = InternetAddress.anyIPv4;
+  // 404 handler for unknown routes
+  router.all('/<ignored|.*>', (Request request) => Response.notFound('Page not found'));
 
   // Configure a pipeline with middleware
   final handler = Pipeline()
@@ -26,8 +29,8 @@ void main(List<String> args) async {
       .addMiddleware(contentTypeMiddleware())
       .addHandler(router.call);
 
-  // For running in containers, we respect the PORT environment variable.
-  final port = int.parse(Platform.environment['PORT'] ?? '8080');
+  final ip = InternetAddress.anyIPv4;
+  final port = int.parse(env['PORT'] ?? '8080');
   final server = await serve(handler, ip, port);
 
   print('🚀 Todo Backend Server started!');

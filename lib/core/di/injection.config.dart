@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dotenv/dotenv.dart' as _i320;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -23,6 +24,7 @@ import '../../infrastructure/database/app_database.dart' as _i89;
 import '../../infrastructure/database/daos/todo_dao.dart' as _i298;
 import '../../infrastructure/repositories/todo_repository.dart' as _i455;
 import '../../presentation/controllers/todo_controller.dart' as _i489;
+import '../../presentation/routes/api.dart' as _i1043;
 import 'injection.dart' as _i464;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -33,6 +35,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
+    gh.singleton<_i320.DotEnv>(() => registerModule.dotEnv);
     gh.singleton<_i520.DatabaseConfig>(() => registerModule.dbConfig);
     gh.lazySingleton<_i298.TodoItemsDao>(() => registerModule.todoItemsDao);
     gh.lazySingleton<_i89.AppDatabase>(
@@ -63,6 +66,7 @@ extension GetItInjectableX on _i174.GetIt {
         deleteTodo: gh<_i77.DeleteTodo>(),
       ),
     );
+    gh.singleton<_i1043.Api>(() => _i1043.Api(gh<_i489.TodoController>()));
     return this;
   }
 }

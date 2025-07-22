@@ -1,5 +1,6 @@
 import 'package:dotenv/dotenv.dart';
 
+
 class DatabaseConfig {
   final String host;
   final int port;
@@ -17,9 +18,7 @@ class DatabaseConfig {
     this.connectionTimeout = const Duration(seconds: 30),
   });
 
-  factory DatabaseConfig.fromDotEnv([String? filePath]) {
-    final env = DotEnv(includePlatformEnvironment: true)..load();
-
+  factory DatabaseConfig.fromDotEnv(DotEnv env) {
     return DatabaseConfig(
       host: env.getOrElse('DB_HOST', () => 'localhost'),
       port: int.parse(env.getOrElse('DB_PORT', () => '5432')),
