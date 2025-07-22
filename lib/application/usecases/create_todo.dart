@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../core/usecases/usecase.dart';
 import '../../domain/entities/todo.dart';
 import '../../domain/repositories/i_todo_repository.dart';
 
@@ -9,12 +8,11 @@ part 'create_todo.freezed.dart';
 part 'create_todo.g.dart';
 
 @injectable
-class CreateTodo implements UseCase<Todo, CreateTodoParams> {
+class CreateTodo {
   const CreateTodo(this.repository);
 
   final ITodoRepository repository;
 
-  @override
   Future<Todo> call(CreateTodoParams params) async {
     final todo = Todo.create(title: params.title, description: params.description);
 

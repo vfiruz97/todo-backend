@@ -2,19 +2,17 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../core/error/failures.dart';
-import '../../core/usecases/usecase.dart';
 import '../../domain/repositories/i_todo_repository.dart';
 
 part 'delete_todo.freezed.dart';
 part 'delete_todo.g.dart';
 
 @injectable
-class DeleteTodo implements UseCase<void, DeleteTodoParams> {
+class DeleteTodo {
   const DeleteTodo(this.repository);
 
   final ITodoRepository repository;
 
-  @override
   Future<void> call(DeleteTodoParams params) async {
     if (params.id <= 0) {
       throw Failure.validation('Todo ID must be a positive integer');
