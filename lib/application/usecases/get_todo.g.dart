@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'delete_task.dart';
+part of 'get_todo.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_DeleteTaskParams _$DeleteTaskParamsFromJson(Map<String, dynamic> json) =>
-    _DeleteTaskParams(id: (json['id'] as num).toInt());
+_$GetTodoParamsImpl _$$GetTodoParamsImplFromJson(Map<String, dynamic> json) =>
+    _$GetTodoParamsImpl(id: (json['id'] as num).toInt());
 
-Map<String, dynamic> _$DeleteTaskParamsToJson(_DeleteTaskParams instance) =>
+Map<String, dynamic> _$$GetTodoParamsImplToJson(_$GetTodoParamsImpl instance) =>
     <String, dynamic>{'id': instance.id};
