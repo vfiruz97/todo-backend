@@ -8,55 +8,64 @@ import 'package:todo_proto/todo_proto.dart' as pt;
 import '../../../../application/usecases/update_todo.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../infrastructure/dtos/todo_dto.dart';
+import '../../../utils/request_response_utils.dart';
 
 @singleton
 class UpdateTodoController {
-  final UpdateTodo _updateTodo;
-
   const UpdateTodoController({required UpdateTodo updateTodo}) : _updateTodo = updateTodo;
+
+  final UpdateTodo _updateTodo;
 
   Future<Response> handle(Request request) async {
     try {
       final idString = request.params['id'];
       if (idString == null) {
-        return _errorResponse('Todo ID is required', HttpStatus.badRequest);
+        return RequestResponseUtils.errorResponse(request, 'Todo ID is required', HttpStatus.badRequest);
       }
 
       final id = int.tryParse(idString);
       if (id == null) {
-        return _errorResponse('Invalid todo ID format', HttpStatus.badRequest);
+        return RequestResponseUtils.errorResponse(request, 'Invalid todo ID format', HttpStatus.badRequest);
       }
 
-      final bodyBytes = await request.read().first;
-      final updateTodoRequest = pt.UpdateTodoRequest.fromBuffer(bodyBytes);
+      final updateTodoData = await RequestResponseUtils.parseRequest<UpdateTodoParams>(
+        request,
+        fromProtobuf: (bytes) {
+          final proto = pt.UpdateTodoRequest.fromBuffer(bytes);
+          return UpdateTodoParams(
+            id: proto.hasId() ? proto.id : id,
+            title: proto.hasTitle() ? proto.title : null,
+            description: proto.hasDescription() ? proto.description : null,
+            isCompleted: proto.hasIsCompleted() ? proto.isCompleted : null,
+          );
+        },
+        fromJson: (json) => UpdateTodoParams.fromJson(json),
+      );
 
-      if (updateTodoRequest.title.isEmpty) {
-        return _errorResponse('Title cannot be empty', HttpStatus.badRequest);
+      if (updateTodoData.title != null && updateTodoData.title!.isEmpty) {
+        return RequestResponseUtils.errorResponse(request, 'Title cannot be empty', HttpStatus.badRequest);
       }
 
       final params = UpdateTodoParams(
         id: id,
-        title: updateTodoRequest.hasTitle() ? updateTodoRequest.title : null,
-        description: updateTodoRequest.hasDescription() ? updateTodoRequest.description : null,
-        isCompleted: updateTodoRequest.hasIsCompleted() ? updateTodoRequest.isCompleted : null,
+        title: updateTodoData.title,
+        description: updateTodoData.description,
+        isCompleted: updateTodoData.isCompleted,
       );
 
       final result = await _updateTodo(params);
+      final todoDto = TodoDto.fromEntity(result);
 
-      return _successResponse(TodoDto.fromEntity(result).toTodoProto().writeToBuffer());
+      return RequestResponseUtils.successResponse(
+        request,
+        todoDto,
+        toProtobuf: () => todoDto.toTodoProto().writeToBuffer(),
+        toJson: () => todoDto.toJson(),
+      );
     } on Failure catch (e) {
-      return _errorResponse(e.message, HttpStatus.internalServerError);
+      return RequestResponseUtils.errorResponse(request, e.message, HttpStatus.internalServerError);
     } catch (e) {
-      return _errorResponse('Invalid Protobuf format or internal server error', HttpStatus.badRequest);
+      return RequestResponseUtils.errorResponse(request, 'Invalid request format', HttpStatus.badRequest);
     }
-  }
-
-  Response _successResponse(List<int> body, [int statusCode = HttpStatus.ok]) {
-    return Response(statusCode, headers: {'Content-Type': 'application/protobuf'}, body: body);
-  }
-
-  Response _errorResponse(String message, int statusCode) {
-    final errorResponse = pt.ErrorResponse(message: message, code: statusCode);
-    return Response(statusCode, headers: {'Content-Type': 'application/protobuf'}, body: errorResponse.writeToBuffer());
   }
 }
