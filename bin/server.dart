@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:todo_backend/core/di/injection.dart';
-import 'package:todo_backend/domain/repositories/i_todo_repository.dart';
 import 'package:todo_backend/presentation/controllers/todo_controller.dart';
 import 'package:todo_backend/presentation/middleware/middleware.dart';
 import 'package:todo_backend/presentation/routes/app_routes.dart';
@@ -11,7 +10,6 @@ import 'package:todo_backend/presentation/routes/app_routes.dart';
 void main(List<String> args) async {
   await configureDependencies();
 
-  final ITodoRepository todoRepository = getIt<ITodoRepository>();
   final TodoController todoController = getIt<TodoController>();
 
   // Create router

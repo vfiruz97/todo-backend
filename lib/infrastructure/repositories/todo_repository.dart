@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
-import 'package:todo_backend/domain/entities/todo.dart';
-import 'package:todo_backend/infrastructure/database/daos/todo_dao.dart';
+import '../../domain/entities/todo.dart';
+import '../database/daos/todo_dao.dart';
 
 import '../../domain/repositories/i_todo_repository.dart';
 

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:todo_backend/infrastructure/config/database_config.dart';
-import 'package:todo_backend/infrastructure/database/app_database.dart';
-import 'package:todo_backend/infrastructure/database/daos/todo_dao.dart';
+import '../../infrastructure/config/database_config.dart';
+import '../../infrastructure/database/app_database.dart';
+import '../../infrastructure/database/daos/todo_dao.dart';
 
 import 'injection.config.dart';
 
