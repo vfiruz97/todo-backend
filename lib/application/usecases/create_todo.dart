@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../core/error/failures.dart';
 import '../../domain/entities/todo.dart';
 import '../../domain/repositories/i_todo_repository.dart';
 
@@ -14,6 +15,10 @@ class CreateTodo {
   final ITodoRepository repository;
 
   Future<Todo> call(CreateTodoParams params) async {
+    if (params.title.isEmpty) {
+      throw Failure.validation('Title cannot be empty');
+    }
+
     final todo = Todo.create(title: params.title, description: params.description);
 
     return await repository.create(todo);

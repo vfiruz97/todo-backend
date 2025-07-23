@@ -21,7 +21,6 @@ UpdateTodoParams _$UpdateTodoParamsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UpdateTodoParams {
-  int get id => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   bool? get isCompleted => throw _privateConstructorUsedError;
@@ -43,7 +42,7 @@ abstract class $UpdateTodoParamsCopyWith<$Res> {
     $Res Function(UpdateTodoParams) then,
   ) = _$UpdateTodoParamsCopyWithImpl<$Res, UpdateTodoParams>;
   @useResult
-  $Res call({int id, String? title, String? description, bool? isCompleted});
+  $Res call({String? title, String? description, bool? isCompleted});
 }
 
 /// @nodoc
@@ -61,17 +60,12 @@ class _$UpdateTodoParamsCopyWithImpl<$Res, $Val extends UpdateTodoParams>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? title = freezed,
     Object? description = freezed,
     Object? isCompleted = freezed,
   }) {
     return _then(
       _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as int,
             title: freezed == title
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
@@ -99,7 +93,7 @@ abstract class _$$UpdateTodoParamsImplCopyWith<$Res>
   ) = __$$UpdateTodoParamsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String? title, String? description, bool? isCompleted});
+  $Res call({String? title, String? description, bool? isCompleted});
 }
 
 /// @nodoc
@@ -116,17 +110,12 @@ class __$$UpdateTodoParamsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? title = freezed,
     Object? description = freezed,
     Object? isCompleted = freezed,
   }) {
     return _then(
       _$UpdateTodoParamsImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as int,
         title: freezed == title
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
@@ -148,7 +137,6 @@ class __$$UpdateTodoParamsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UpdateTodoParamsImpl implements _UpdateTodoParams {
   const _$UpdateTodoParamsImpl({
-    required this.id,
     this.title,
     this.description,
     this.isCompleted,
@@ -158,8 +146,6 @@ class _$UpdateTodoParamsImpl implements _UpdateTodoParams {
       _$$UpdateTodoParamsImplFromJson(json);
 
   @override
-  final int id;
-  @override
   final String? title;
   @override
   final String? description;
@@ -168,7 +154,7 @@ class _$UpdateTodoParamsImpl implements _UpdateTodoParams {
 
   @override
   String toString() {
-    return 'UpdateTodoParams(id: $id, title: $title, description: $description, isCompleted: $isCompleted)';
+    return 'UpdateTodoParams(title: $title, description: $description, isCompleted: $isCompleted)';
   }
 
   @override
@@ -176,7 +162,6 @@ class _$UpdateTodoParamsImpl implements _UpdateTodoParams {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UpdateTodoParamsImpl &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -186,8 +171,7 @@ class _$UpdateTodoParamsImpl implements _UpdateTodoParams {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, title, description, isCompleted);
+  int get hashCode => Object.hash(runtimeType, title, description, isCompleted);
 
   /// Create a copy of UpdateTodoParams
   /// with the given fields replaced by the non-null parameter values.
@@ -208,7 +192,6 @@ class _$UpdateTodoParamsImpl implements _UpdateTodoParams {
 
 abstract class _UpdateTodoParams implements UpdateTodoParams {
   const factory _UpdateTodoParams({
-    required final int id,
     final String? title,
     final String? description,
     final bool? isCompleted,
@@ -217,8 +200,6 @@ abstract class _UpdateTodoParams implements UpdateTodoParams {
   factory _UpdateTodoParams.fromJson(Map<String, dynamic> json) =
       _$UpdateTodoParamsImpl.fromJson;
 
-  @override
-  int get id;
   @override
   String? get title;
   @override

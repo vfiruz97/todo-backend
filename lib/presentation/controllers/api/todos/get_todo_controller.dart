@@ -18,16 +18,8 @@ class GetTodoController {
   Future<Response> handle(Request request) async {
     try {
       final idString = request.params['id'];
-      if (idString == null) {
-        return RequestResponseUtils.errorResponse(request, 'Todo ID is required', HttpStatus.badRequest);
-      }
+      final params = GetTodoParams(id: idString);
 
-      final id = int.tryParse(idString);
-      if (id == null) {
-        return RequestResponseUtils.errorResponse(request, 'Invalid todo ID format', HttpStatus.badRequest);
-      }
-
-      final params = GetTodoParams(id: id);
       final result = await _getTodo(params);
 
       if (result == null) {

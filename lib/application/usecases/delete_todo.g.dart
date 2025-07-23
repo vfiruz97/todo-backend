@@ -8,7 +8,7 @@ part of 'delete_todo.dart';
 
 _$DeleteTodoParamsImpl _$$DeleteTodoParamsImplFromJson(
   Map<String, dynamic> json,
-) => _$DeleteTodoParamsImpl(id: (json['id'] as num).toInt());
+) => _$DeleteTodoParamsImpl(id: json['id'] as String?);
 
 Map<String, dynamic> _$$DeleteTodoParamsImplToJson(
   _$DeleteTodoParamsImpl instance,

@@ -7,7 +7,7 @@ part of 'get_todo.dart';
 // **************************************************************************
 
 _$GetTodoParamsImpl _$$GetTodoParamsImplFromJson(Map<String, dynamic> json) =>
-    _$GetTodoParamsImpl(id: (json['id'] as num).toInt());
+    _$GetTodoParamsImpl(id: json['id'] as String?);
 
 Map<String, dynamic> _$$GetTodoParamsImplToJson(_$GetTodoParamsImpl instance) =>
     <String, dynamic>{'id': instance.id};

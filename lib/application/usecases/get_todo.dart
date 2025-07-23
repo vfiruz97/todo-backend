@@ -15,17 +15,26 @@ class GetTodo {
   final ITodoRepository repository;
 
   Future<Todo?> call(GetTodoParams params) async {
-    if (params.id <= 0) {
+    if (params.id == null) {
+      throw Failure.validation('Todo ID is required');
+    }
+
+    final id = int.tryParse(params.id!);
+    if (id == null) {
+      throw Failure.validation('Invalid todo ID format');
+    }
+
+    if (id <= 0) {
       throw Failure.validation('Todo ID must be a positive integer');
     }
 
-    return await repository.getById(params.id);
+    return await repository.getById(id);
   }
 }
 
 @freezed
 abstract class GetTodoParams with _$GetTodoParams {
-  const factory GetTodoParams({required int id}) = _GetTodoParams;
+  const factory GetTodoParams({required String? id}) = _GetTodoParams;
 
   factory GetTodoParams.fromJson(Map<String, dynamic> json) => _$GetTodoParamsFromJson(json);
 }

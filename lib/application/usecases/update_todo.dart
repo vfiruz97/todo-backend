@@ -14,14 +14,27 @@ class UpdateTodo {
 
   final ITodoRepository repository;
 
-  Future<Todo> call(UpdateTodoParams params) async {
-    if (params.id <= 0) {
+  Future<Todo> call(String? idString, UpdateTodoParams params) async {
+    if (idString == null) {
+      throw Failure.validation('Todo ID is required');
+    }
+
+    final id = int.tryParse(idString);
+    if (id == null) {
+      throw Failure.validation('Invalid todo ID format');
+    }
+
+    if (id <= 0) {
       throw Failure.validation('Todo ID must be a positive integer');
     }
 
-    final existingTodo = await repository.getById(params.id);
+    if (params.title != null && params.title!.isEmpty) {
+      throw Failure.validation('Title cannot be empty');
+    }
+
+    final existingTodo = await repository.getById(id);
     if (existingTodo == null) {
-      throw Failure.notFound('Todo with ID ${params.id} not found');
+      throw Failure.notFound('Todo with ID $id not found');
     }
 
     final updatedTodo = existingTodo.copyWith(
@@ -37,8 +50,7 @@ class UpdateTodo {
 
 @freezed
 abstract class UpdateTodoParams with _$UpdateTodoParams {
-  const factory UpdateTodoParams({required int id, String? title, String? description, bool? isCompleted}) =
-      _UpdateTodoParams;
+  const factory UpdateTodoParams({String? title, String? description, bool? isCompleted}) = _UpdateTodoParams;
 
   factory UpdateTodoParams.fromJson(Map<String, dynamic> json) => _$UpdateTodoParamsFromJson(json);
 }

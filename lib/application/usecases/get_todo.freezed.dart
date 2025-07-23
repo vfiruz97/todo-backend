@@ -21,7 +21,7 @@ GetTodoParams _$GetTodoParamsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$GetTodoParams {
-  int get id => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
 
   /// Serializes this GetTodoParams to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,7 +40,7 @@ abstract class $GetTodoParamsCopyWith<$Res> {
     $Res Function(GetTodoParams) then,
   ) = _$GetTodoParamsCopyWithImpl<$Res, GetTodoParams>;
   @useResult
-  $Res call({int id});
+  $Res call({String? id});
 }
 
 /// @nodoc
@@ -57,13 +57,13 @@ class _$GetTodoParamsCopyWithImpl<$Res, $Val extends GetTodoParams>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? id = null}) {
+  $Res call({Object? id = freezed}) {
     return _then(
       _value.copyWith(
-            id: null == id
+            id: freezed == id
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
-                      as int,
+                      as String?,
           )
           as $Val,
     );
@@ -79,7 +79,7 @@ abstract class _$$GetTodoParamsImplCopyWith<$Res>
   ) = __$$GetTodoParamsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id});
+  $Res call({String? id});
 }
 
 /// @nodoc
@@ -95,13 +95,13 @@ class __$$GetTodoParamsImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? id = null}) {
+  $Res call({Object? id = freezed}) {
     return _then(
       _$GetTodoParamsImpl(
-        id: null == id
+        id: freezed == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
-                  as int,
+                  as String?,
       ),
     );
   }
@@ -116,7 +116,7 @@ class _$GetTodoParamsImpl implements _GetTodoParams {
       _$$GetTodoParamsImplFromJson(json);
 
   @override
-  final int id;
+  final String? id;
 
   @override
   String toString() {
@@ -150,13 +150,14 @@ class _$GetTodoParamsImpl implements _GetTodoParams {
 }
 
 abstract class _GetTodoParams implements GetTodoParams {
-  const factory _GetTodoParams({required final int id}) = _$GetTodoParamsImpl;
+  const factory _GetTodoParams({required final String? id}) =
+      _$GetTodoParamsImpl;
 
   factory _GetTodoParams.fromJson(Map<String, dynamic> json) =
       _$GetTodoParamsImpl.fromJson;
 
   @override
-  int get id;
+  String? get id;
 
   /// Create a copy of GetTodoParams
   /// with the given fields replaced by the non-null parameter values.

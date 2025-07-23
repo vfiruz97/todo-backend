@@ -26,10 +26,6 @@ class CreateTodoController {
         fromJson: (json) => CreateTodoParams.fromJson(json),
       );
 
-      if (createTodoParams.title.isEmpty) {
-        return RequestResponseUtils.errorResponse(request, 'Title cannot be empty', HttpStatus.badRequest);
-      }
-
       final result = await _createTodo(createTodoParams);
       final todoDto = TodoDto.fromEntity(result);
 
@@ -40,7 +36,7 @@ class CreateTodoController {
         toJson: () => todoDto.toJson(),
       );
     } on Failure catch (e) {
-      return RequestResponseUtils.errorResponse(request, e.message, HttpStatus.internalServerError);
+      return RequestResponseUtils.errorResponse(request, e.message, e.code);
     } catch (e) {
       return RequestResponseUtils.errorResponse(request, 'Invalid request format', HttpStatus.badRequest);
     }

@@ -21,7 +21,7 @@ DeleteTodoParams _$DeleteTodoParamsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DeleteTodoParams {
-  int get id => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
 
   /// Serializes this DeleteTodoParams to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,7 +40,7 @@ abstract class $DeleteTodoParamsCopyWith<$Res> {
     $Res Function(DeleteTodoParams) then,
   ) = _$DeleteTodoParamsCopyWithImpl<$Res, DeleteTodoParams>;
   @useResult
-  $Res call({int id});
+  $Res call({String? id});
 }
 
 /// @nodoc
@@ -57,13 +57,13 @@ class _$DeleteTodoParamsCopyWithImpl<$Res, $Val extends DeleteTodoParams>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? id = null}) {
+  $Res call({Object? id = freezed}) {
     return _then(
       _value.copyWith(
-            id: null == id
+            id: freezed == id
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
-                      as int,
+                      as String?,
           )
           as $Val,
     );
@@ -79,7 +79,7 @@ abstract class _$$DeleteTodoParamsImplCopyWith<$Res>
   ) = __$$DeleteTodoParamsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id});
+  $Res call({String? id});
 }
 
 /// @nodoc
@@ -95,13 +95,13 @@ class __$$DeleteTodoParamsImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? id = null}) {
+  $Res call({Object? id = freezed}) {
     return _then(
       _$DeleteTodoParamsImpl(
-        id: null == id
+        id: freezed == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
-                  as int,
+                  as String?,
       ),
     );
   }
@@ -116,7 +116,7 @@ class _$DeleteTodoParamsImpl implements _DeleteTodoParams {
       _$$DeleteTodoParamsImplFromJson(json);
 
   @override
-  final int id;
+  final String? id;
 
   @override
   String toString() {
@@ -153,14 +153,14 @@ class _$DeleteTodoParamsImpl implements _DeleteTodoParams {
 }
 
 abstract class _DeleteTodoParams implements DeleteTodoParams {
-  const factory _DeleteTodoParams({required final int id}) =
+  const factory _DeleteTodoParams({required final String? id}) =
       _$DeleteTodoParamsImpl;
 
   factory _DeleteTodoParams.fromJson(Map<String, dynamic> json) =
       _$DeleteTodoParamsImpl.fromJson;
 
   @override
-  int get id;
+  String? get id;
 
   /// Create a copy of DeleteTodoParams
   /// with the given fields replaced by the non-null parameter values.

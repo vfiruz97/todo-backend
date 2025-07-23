@@ -17,21 +17,12 @@ class DeleteTodoController {
   Future<Response> handle(Request request) async {
     try {
       final idString = request.params['id'];
-      if (idString == null) {
-        return RequestResponseUtils.errorResponse(request, 'Todo ID is required', HttpStatus.badRequest);
-      }
-
-      final id = int.tryParse(idString);
-      if (id == null) {
-        return RequestResponseUtils.errorResponse(request, 'Invalid todo ID format', HttpStatus.badRequest);
-      }
-
-      final params = DeleteTodoParams(id: id);
+      final params = DeleteTodoParams(id: idString);
       await _deleteTodo(params);
 
       return Response(HttpStatus.noContent);
     } on Failure catch (e) {
-      return RequestResponseUtils.errorResponse(request, e.message, HttpStatus.internalServerError);
+      return RequestResponseUtils.errorResponse(request, e.message, e.code);
     } catch (e) {
       return RequestResponseUtils.errorResponse(request, 'Internal server error', HttpStatus.internalServerError);
     }
